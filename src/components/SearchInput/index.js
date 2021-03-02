@@ -8,7 +8,7 @@ import {
 } from "./styles.js";
 export const SearchInput = ({ onchange, type, value }) => {
   const [error, setError] = React.useState(false);
-  const [search, setSearch] = React.useState(value);
+  const [search, setSearch] = React.useState("");
 
   const handleOnchange = ({ target: { value } }) => {
     setSearch(value);
@@ -22,6 +22,9 @@ export const SearchInput = ({ onchange, type, value }) => {
     setError(false);
     onchange(search);
   };
+  React.useEffect(() => {
+    setSearch(value)
+  },[value])
   return (
     <StyledForm noValidate onSubmit={onSubmit}>
       <Container>

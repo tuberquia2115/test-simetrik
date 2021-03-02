@@ -10,7 +10,7 @@ export const Container = styled.div`
 export const StyledInput = styled.input`
   border: 1px solid var(--primary);
   list-style: none;
-  padding: 1em;
+  padding: 0.5em;
   font-size: 15px;
   border-radius: 5px;
   width: 100%;

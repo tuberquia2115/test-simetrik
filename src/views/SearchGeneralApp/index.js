@@ -2,7 +2,7 @@
 import React from "react";
 import { ComponentFilter } from "../../components/ComponentFilter";
 import { Header } from "../../components/Header";
-import { Loading } from "../../components/Loading";
+
 import { SearchInput } from "../../components/SearchInput";
 import { Tabs } from "../../components/Tabs";
 import { modules } from "../../constants/data";
@@ -10,10 +10,10 @@ import { Conciliaciones } from "../../containers/Conciliaciones";
 import { Fuentes } from "../../containers/Fuentes";
 import { Tableros } from "../../containers/Tableros";
 import { Usuarios } from "../../containers/Usuarios";
-import { getItemsFuentesSearch, getItemsSearch } from "../../helpers";
 import {
   ContainerMain,
   ContainerSearch,
+  Message,
   StyledFiltros,
   StyledMain,
 } from "./styles";
@@ -22,52 +22,19 @@ const SearchGeneralApp = () => {
   const [type, setType] = React.useState("text");
   const [search, setSearch] = React.useState("");
   const [typeModule, setTypeModule] = React.useState("");
-  const [data, setData] = React.useState([]);
 
-  const [spinner, setSpinner] = React.useState(false);
-
-  React.useEffect(() => {
-    const getData = async () => {
-      setSpinner(true);
-      await getItemsSearch(search, modules, type, typeModule)
-        .then((res) => {
-          setTimeout(() => {
-            setData(res.data);
-            setSpinner(false);
-          }, 2000);
-        })
-        .catch((error) => console.log(error));
-    };
-    getData();
-  }, [search, typeModule, type]);
-
-  React.useEffect(() => {
-    const getData = async () => {
-      setSpinner(true);
-      await getItemsFuentesSearch(search, modules, type)
-        .then((res) => {
-          setTimeout(() => {
-            setData(res.data);
-            setSpinner(false);
-          }, 2000);
-        })
-        .catch((error) => console.log(error));
-    };
-    getData();
-  }, [search, typeModule, type]);
-
-  const renderModule = (typeModule, data) => {
+  const renderModule = (typeModule) => {
     switch (typeModule) {
       case "conciliaciones":
-        return <Conciliaciones list={data} />;
+        return <Conciliaciones search={search} type={type} />;
       case "fuentes":
-        return <Fuentes list={data} />;
+        return <Fuentes search={search} type={type} />;
       case "tableros":
-        return <Tableros list={data} />;
+        return <Tableros search={search} type={type} />;
       case "usuarios":
-        return <Usuarios list={data} />;
+        return <Usuarios search={search} type={type} />;
       default:
-        return <Conciliaciones list={data} />;
+        return <Conciliaciones search={search} type={type} />;
     }
   };
   const getTypeModule = (type) => {
@@ -79,7 +46,11 @@ const SearchGeneralApp = () => {
       <Header title="Buscador General" />
       <ContainerMain>
         <ContainerSearch>
-          <SearchInput type={type} value={search} onchange={(value) => setSearch(value)} />
+          <SearchInput
+            type={type}
+            value={search}
+            onchange={(value) => setSearch(value)}
+          />
         </ContainerSearch>
         <div style={{ display: "flex", width: "100%" }}>
           <StyledFiltros>
@@ -92,23 +63,18 @@ const SearchGeneralApp = () => {
           </StyledFiltros>
           <StyledMain>
             {search === "" ? (
-              <div style={{ textAlign: "center", padding: "2rem" }}>
-                NO se ha realizado ninguna Busquedad
+              <div>
+              <Message >
+                <h4>No se ha realizado una busqueda.</h4>
+                <p>
+                  Selecciona el modulo al cual va a realizar el Filtro,
+                  seguidamente diligencia el campo de busqueda y da click en
+                  "BUSCAR", también podrá filtrar por tipo de dato.
+                </p>
+              </Message>
               </div>
             ) : (
-              <>
-                {spinner ? (
-                  <Loading />
-                ) : (
-                  <>
-                    {data.length === 0 ? (
-                      <div>No se encontraron resultados</div>
-                    ) : (
-                      renderModule(typeModule, data)
-                    )}
-                  </>
-                )}
-              </>
+              renderModule(typeModule)
             )}
           </StyledMain>
         </div>

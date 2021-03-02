@@ -24,3 +24,17 @@ export const StyledMain = styled.main`
   display: flex;
   justify-content: center;
 `;
+
+export const Message = styled.div`
+  font-family: "Opens Sans", sans-serif;
+  padding: 3rem;
+
+  text-align: center;
+  h4 {
+    color: var(--secondary);
+  }
+  p {
+    font-size: 15px;
+    color: #212529;
+  }
+`;
