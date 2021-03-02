@@ -14,7 +14,7 @@ const Layout = ({ children }) => {
             --primary-light: #d065c9;
             --contrastText: #ffffff;
             --secondary: #ff5203;
-            --secodary-dark: #c31200;
+            --secondary-dark: #c31200;
             --secondary-light: #ff863d;
             --error: #d50000;
             --warning: #ffcc00;

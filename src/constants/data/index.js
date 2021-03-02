@@ -10,8 +10,8 @@ export const modules = [
     items: conciliaciones,
   },
   {
-    name: "Fuetnes",
-    type: "fuetnes",
+    name: "Fuentes",
+    type: "fuentes",
     items: fuetnes,
   },
   {

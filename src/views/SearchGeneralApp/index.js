@@ -7,9 +7,16 @@ import { SearchInput } from "../../components/SearchInput";
 import { Tabs } from "../../components/Tabs";
 import { modules } from "../../constants/data";
 import { Conciliaciones } from "../../containers/Conciliaciones";
+import { Fuentes } from "../../containers/Fuentes";
+import { Tableros } from "../../containers/Tableros";
 import { Usuarios } from "../../containers/Usuarios";
-import { getItemsSearch } from "../../helpers";
-import { ContainerMain, ContainerSearch, StyledFiltros } from "./styles";
+import { getItemsFuentesSearch, getItemsSearch } from "../../helpers";
+import {
+  ContainerMain,
+  ContainerSearch,
+  StyledFiltros,
+  StyledMain,
+} from "./styles";
 
 const SearchGeneralApp = () => {
   const [type, setType] = React.useState("text");
@@ -32,37 +39,58 @@ const SearchGeneralApp = () => {
         .catch((error) => console.log(error));
     };
     getData();
-  }, [search]);
+  }, [search, typeModule, type]);
+
+  React.useEffect(() => {
+    const getData = async () => {
+      setSpinner(true);
+      await getItemsFuentesSearch(search, modules, type)
+        .then((res) => {
+          setTimeout(() => {
+            setData(res.data);
+            setSpinner(false);
+          }, 2000);
+        })
+        .catch((error) => console.log(error));
+    };
+    getData();
+  }, [search, typeModule, type]);
 
   const renderModule = (typeModule, data) => {
     switch (typeModule) {
       case "conciliaciones":
         return <Conciliaciones list={data} />;
-      case "fuetnes":
-        return <h3>fuetnes</h3>;
+      case "fuentes":
+        return <Fuentes list={data} />;
       case "tableros":
-        return <h4>tableros</h4>;
+        return <Tableros list={data} />;
       case "usuarios":
-        return <Usuarios list={data}/>;
+        return <Usuarios list={data} />;
       default:
         return <Conciliaciones list={data} />;
     }
+  };
+  const getTypeModule = (type) => {
+    setTypeModule(type);
+    setSearch("");
   };
   return (
     <>
       <Header title="Buscador General" />
       <ContainerMain>
         <ContainerSearch>
-          <SearchInput type={type} onchange={(value) => setSearch(value)} />
+          <SearchInput type={type} value={search} onchange={(value) => setSearch(value)} />
         </ContainerSearch>
         <div style={{ display: "flex", width: "100%" }}>
           <StyledFiltros>
-            <Tabs listTabs={modules} setTab={setTypeModule} tab={typeModule} />
+            <Tabs
+              listTabs={modules}
+              setTab={(v) => getTypeModule(v)}
+              tab={typeModule}
+            />
             <ComponentFilter setType={setType} type={type} />
           </StyledFiltros>
-          <main
-            style={{ width: "100%", display: "flex", justifyContent: "center" }}
-          >
+          <StyledMain>
             {search === "" ? (
               <div style={{ textAlign: "center", padding: "2rem" }}>
                 NO se ha realizado ninguna Busquedad
@@ -82,7 +110,7 @@ const SearchGeneralApp = () => {
                 )}
               </>
             )}
-          </main>
+          </StyledMain>
         </div>
       </ContainerMain>
     </>

@@ -17,4 +17,10 @@ export const StyledFiltros = styled.div`
   justify-content: space-between;
   width: 15%;
   height: 40%;
-`
+`;
+
+export const StyledMain = styled.main`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;

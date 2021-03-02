@@ -1,3 +1,12 @@
+/**
+ * @description Funcion que permite filtrar el modulo seleccionado.
+ * @param {string} typeModule Tipo de mpdulo
+ * @param {Array} modules Modulos de la plataforma
+ */
+const getModule = (typeModule, modules) => {
+  return modules.filter((module) => module.type === typeModule);
+};
+
 const getItemsConciliacionesText = (module, search) => {
   return module[0].items.filter(
     (elm) =>
@@ -28,6 +37,7 @@ const getItemsUsuariosText = (module, search) => {
   );
 };
 
+// filtros del module de usuarios
 const getItemsusuariosDate = (module, search) => {
   return module[0].items.filter((elm) =>
     elm.createdAt.toUpperCase().includes(search.toUpperCase())
@@ -38,9 +48,42 @@ const getItemsusuariosNumber = (module, search) => {
   return module[0].items.filter((elm) => elm.age === Number(search));
 };
 
-const getModule = (typeModule, modules) => {
-  return modules.filter((module) => module.type === typeModule);
+// Filtros del modulo de fuentes
+
+const getItemsFuentesText = (module, search) => {
+  return module[0].items.filter(
+    (elm) =>
+      elm.name.toUpperCase().includes(search.toUpperCase()) ||
+      elm.company.toUpperCase().includes(search.toUpperCase()) ||
+      elm.description.toUpperCase().includes(search.toUpperCase())
+  );
 };
+
+const getItemsFuentesDate = (module, search) => {
+  return module[0].items.filter(
+    (elm) =>
+      elm.timestamp.createdAt.toUpperCase().includes(search.toUpperCase()) ||
+      elm.timestamp.updateAt.toUpperCase().includes(search.toUpperCase())
+  );
+};
+
+export const getItemsFuentesSearch = (search, modules, typeDate) => {
+  return new Promise((resolve, reject) => {
+    const module = getModule("fuentes", modules);
+    try {
+      if(typeDate === "text"){
+        const result = getItemsFuentesText(module, search);
+        return resolve({ data: result });
+      } else if(typeDate === "date") {
+        const result = getItemsFuentesDate(module, search);
+        return resolve({ data: result });
+      }
+    } catch (error) {
+      reject({ msg: "error de consulta", code: 404 });
+    }
+  })
+}
+
 export const getItemsSearch = (search, modules, typeDate, typeModule) => {
   return new Promise((resolve, reject) => {
     try {
@@ -61,7 +104,7 @@ export const getItemsSearch = (search, modules, typeDate, typeModule) => {
           const result = getItemsusuariosDate(module, search);
           return resolve({ data: result });
         } else if (typeDate === "number") {
-          console.log("typeDate:",typeDate)
+          console.log("typeDate:", typeDate);
           const result = getItemsusuariosNumber(module, search);
           return resolve({ data: result });
         }
@@ -72,3 +115,4 @@ export const getItemsSearch = (search, modules, typeDate, typeModule) => {
     }
   });
 };
+
